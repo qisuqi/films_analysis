@@ -55,11 +55,11 @@ if active_tab == 'Home':
 
     st.title('Analysing Films Watched by Butler-Su')
 
-    output_graphs = st.beta_container()
+    output_graphs = st.container()
 
     with output_graphs:
 
-        col1, col2 = st.beta_columns(2)
+        col1, col2 = st.columns(2)
 
         with col1:
             st.subheader("Number of Films Watched per Genre")
@@ -179,7 +179,7 @@ if active_tab == 'Home':
         }, use_container_width=True)
         st.markdown('George is a mean Bastard.')
 
-        col3, col4 = st.beta_columns(2)
+        col3, col4 = st.columns(2)
 
         with col3:
             st.subheader("Average Film Ratings for All Time")

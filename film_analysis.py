@@ -88,7 +88,7 @@ if active_tab == 'Home':
             st.vega_lite_chart(file, {
                 'width': 'container',
                 'height': 400,
-                "mark": {"type": "bar", "tooltip": {"content": "encoding"}},
+                "mark": {"type": "bar"},
                 "encoding": {
                     "y": {"field": "Genre", "sort": "-x"},
                     "x": {"aggregate": "sum", "field": "Mean", "title": "Total Score", "type": "quantitative"},
@@ -96,8 +96,13 @@ if active_tab == 'Home':
                         "field": "Genre",
                         "type": "nominal",
                         "scale": {"scheme": "tableau20"}
-                    }
+                    },
+                    "tooltip": [
+                        {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
+                        {"field": "Genre", "title": "Genre"}
+                    ],
                 },
+
                 "view": {"stroke": None}
             }, use_container_width=True)
 

@@ -199,7 +199,7 @@ if active_tab == 'Home':
 
         with col3:
             st.subheader("Average Film Ratings for All Time")
-            st.markdown(f'The highest rated film so far is {highest_rated_film[0]}').
+            st.markdown(f'The highest rated film so far is {highest_rated_film[0]}.')
                         #f'{highest_rated_film[1]}, and {highest_rated_film[2]}.')
             
             st.vega_lite_chart(file, {

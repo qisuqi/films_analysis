@@ -110,9 +110,9 @@ if active_tab == 'Home':
             }, use_container_width=True)
 
         st.subheader("Density Plot of Ratings")
-        st.markdown(f'Qiqi's average score is {qiqi_average_score}, '
-                    f'George's average score is {george_average_score}. '
-                    f'Therefore, George is a mean Bastard.')
+        st.markdown(f"Qiqi's average score is {qiqi_average_score}, "
+                    f"George's average score is {george_average_score}. "
+                    f"Therefore, George is a mean Bastard.")
         
         st.vega_lite_chart(file, {
             "width": 400,

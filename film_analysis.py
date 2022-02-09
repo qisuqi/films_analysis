@@ -115,8 +115,8 @@ if active_tab == 'Home':
             }, use_container_width=True)
 
         st.subheader("Density Plot of Ratings")
-        st.markdown(f"Qiqi's average score is {qiqi_average_score}, "
-                    f"George's average score is {george_average_score}. "
+        st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)}, "
+                    f"George's average score is {np.round(george_average_score, 2)}. "
                     f"Therefore, {mean_bastard} is a mean Bastard.")
         
         st.vega_lite_chart(file, {

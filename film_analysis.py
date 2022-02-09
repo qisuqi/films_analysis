@@ -76,7 +76,7 @@ if active_tab == 'Home':
             st.vega_lite_chart(file, {
                 'width': 'container',
                 'height': 400,
-                "mark": {"type": "arc", "tooltip": {"content": "encoding"}, "innerRadius": 70},
+                "mark": {"type": "arc", "tooltip": {"content": "encoding"}, "innerRadius": 50},
                 "encoding": {
                     "theta": {"aggregate": "count", "title": "No. of Films"},
                     "color": {

@@ -18,6 +18,11 @@ rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 qiqi_average_score = np.average(file['Qiqi'])
 george_average_score = np.average(file['George'])
 
+if george_average_score < qiqi_average_score:
+    mean_bastard = 'George'
+else:
+    mean_bastard = 'Qiqi'
+   
 st.set_page_config(layout="wide")
 
 st.markdown(
@@ -112,7 +117,7 @@ if active_tab == 'Home':
         st.subheader("Density Plot of Ratings")
         st.markdown(f"Qiqi's average score is {qiqi_average_score}, "
                     f"George's average score is {george_average_score}. "
-                    f"Therefore, George is a mean Bastard.")
+                    f"Therefore, {mean_bastard} is a mean Bastard.")
         
         st.vega_lite_chart(file, {
             "width": 400,

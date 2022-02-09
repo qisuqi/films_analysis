@@ -20,8 +20,12 @@ george_average_score = np.average(file['George'])
 
 if george_average_score < qiqi_average_score:
     mean_bastard = 'George'
-else:
+elif qiqi_average_score < george_average_score:
     mean_bastard = 'Qiqi'
+
+else:
+    mean_bastard = 'No one'
+
    
 st.set_page_config(layout="wide")
 
@@ -115,7 +119,7 @@ if active_tab == 'Home':
             }, use_container_width=True)
 
         st.subheader("Density Plot of Ratings")
-        st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)}, "
+        st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)} and "
                     f"George's average score is {np.round(george_average_score, 2)}. "
                     f"Therefore, {mean_bastard} is a mean Bastard.")
         

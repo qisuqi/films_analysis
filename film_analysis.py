@@ -102,8 +102,13 @@ if active_tab == 'Home':
                 'height': 400,
                 "mark": {"type": "bar"},
                 "encoding": {
-                    "y": {"field": "Genre", "sort": "-x"},
-                    "x": {"aggregate": "sum", "field": "Mean", "title": "Total Score", "type": "quantitative"},
+                    "y": {"field": "Genre", 
+                          "sort": "-x",
+                          "axis": {"labels": False}},
+                    "x": {"aggregate": "sum", 
+                          "field": "Mean", 
+                          "title": "Total Score", 
+                          "type": "quantitative"},
                     "color": {
                         "field": "Genre",
                         "type": "nominal",

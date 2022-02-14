@@ -104,7 +104,7 @@ if active_tab == 'Home':
                 "encoding": {
                     "y": {"field": "Genre", 
                           "sort": "-x",
-                          "title": null},
+                          "title": None},
                     "x": {"aggregate": "sum", 
                           "field": "Mean", 
                           "title": "Total Score", 
@@ -153,7 +153,8 @@ if active_tab == 'Home':
                         },
                         "y": {
                             "field": "density",
-                            "type": "quantitative"
+                            "type": "quantitative",
+                            "title": None
                         },
                         "color": {"datum": "Average"}
                     }
@@ -174,7 +175,8 @@ if active_tab == 'Home':
                         },
                         "y": {
                             "field": "density",
-                            "type": "quantitative"
+                            "type": "quantitative",
+                            "title": None
                         },
                         "color": {"datum": "George"}
                     }
@@ -195,7 +197,8 @@ if active_tab == 'Home':
                         },
                         "y": {
                             "field": "density",
-                            "type": "quantitative"
+                            "type": "quantitative",
+                            "title": None
                         },
                         "color": {"datum": "Qiqi"}
                     }
@@ -209,15 +212,18 @@ if active_tab == 'Home':
         with col3:
             st.subheader("Average Film Ratings for All Time")
             st.markdown(f'The highest rated film so far is {highest_rated_film[0]}.')
-                        #f'{highest_rated_film[1]}, and {highest_rated_film[2]}.')
             
             st.vega_lite_chart(file, {
                 "width": "container",
                 "height": 500,
                 "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
                 "encoding": {
-                    "x": {"field": "Mean", "type": "quantitative", "title": "Score"},
-                    "y": {"field": "Name", "sort": "-x", "title": "Film Names"}
+                    "x": {"field": "Mean",
+                          "type": "quantitative",
+                          "title": "Score"},
+                    "y": {"field": "Name",
+                          "sort": "-x",
+                          "title": None}
                 },
                 "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
             }, use_container_width=True)
@@ -239,8 +245,12 @@ if active_tab == 'Home':
                     {"filter": "datum.Mean != 0"},
                 ],
                 "encoding": {
-                    "x": {"field": "diff", "type": "quantitative", "title": "Score"},
-                    "y": {"field": "Name", "sort": "-x", "title": "Film Names"},
+                    "x": {"field": "diff",
+                          "type": "quantitative",
+                          "title": "Score"},
+                    "y": {"field": "Name",
+                          "sort": "-x",
+                          "title": None},
                     "color": {
                         "condition": {"test": "datum.diff>0", "value": "green"},
                         "value": "red"

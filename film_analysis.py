@@ -104,7 +104,7 @@ if active_tab == 'Home':
                 "encoding": {
                     "y": {"field": "Genre", 
                           "sort": "-x",
-                          "axis": {"labels": False}},
+                          "title": null},
                     "x": {"aggregate": "sum", 
                           "field": "Mean", 
                           "title": "Total Score", 

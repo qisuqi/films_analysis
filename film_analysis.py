@@ -41,6 +41,9 @@ no_most_watched_genre = file['Genre'].value_counts().values.tolist()[0]
 most_watched_genre_df = file[file['Genre'] == most_watched_genre]
 rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 
+all_genre = [x for x in file['Genre'].unique()] and [x for x in file['Sub-Genre'].unique()]
+all_genre = list(sorted(filter(None, all_genre)))
+
 qiqi_average_score = np.average(file['Qiqi'])
 george_average_score = np.average(file['George'])
 
@@ -62,7 +65,8 @@ with st.form(key='Submit Films'):
         st.sidebar.markdown("## Submit Films")
         Name = st.sidebar.text_input("Film Name", key="Name")
         Director = st.sidebar.text_input('Director', key='Director')
-        Genre = st.sidebar.selectbox('Genre', [x for x in file['Genre'].unique()])
+        Genre = st.sidebar.selectbox('Genre', all_genre)
+        Sub_Genre = st.sidebar.selectbox('Sub-Genre', all_genre)
         George = st.sidebar.number_input("George's Score", key="George", min_value=0, max_value=10, step=1)
         Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0, max_value=10, step=1)
         BoB = st.sidebar.radio('Based on Books?', ('Y', 'N'))
@@ -74,44 +78,15 @@ if submit_button:
     sheet.append_row(info)
     file = gsheet2df(sheet)
 
-query_params = st.experimental_get_query_params()
-tabs = ["Home", "Submit Films"]
+st.title('Analysing Films Watched by Butler-Su')
 
-if "tab" in query_params:
-    active_tab = query_params["tab"][0]
-else:
-    active_tab = "Home"
+output_graphs = st.container()
 
-if active_tab not in tabs:
-    st.experimental_set_query_params(tab="Home")
-    active_tab = "Home"
+st.subheader("Number of Films Watched per Genre")
+st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
+            f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
 
-li_items = "".join(
-    f"""
-    <li class="nav-item">
-        <a class="nav-link{' active' if t == active_tab else ''}" href="/?tab={t}">{t}</a>
-    </li>
-    """
-    for t in tabs
-)
-tabs_html = f"""
-    <ul class="nav nav-tabs">
-    {li_items}
-    </ul>
-"""
-
-st.markdown(tabs_html, unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
-
-if active_tab == 'Home':
-    st.title('Analysing Films Watched by Butler-Su')
-
-    output_graphs = st.container()
-
-    st.subheader("Number of Films Watched per Genre")
-    st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
-                f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
-    st.vega_lite_chart(file, {
+st.vega_lite_chart(file, {
         'width': 'container',
         'height': 400,
         "mark": {"type": "arc", "tooltip": {"content": "encoding"}, "innerRadius": 50},
@@ -126,11 +101,11 @@ if active_tab == 'Home':
         "view": {"stroke": None}
     }, use_container_width=True)
 
+st.subheader("Total Score per Genre")
+st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
+            f"{round(rating_of_most_watched_genre, 2)}.")
 
-    st.subheader("Total Score per Genre")
-    st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
-                f"{round(rating_of_most_watched_genre, 2)}.")
-    st.vega_lite_chart(file, {
+st.vega_lite_chart(file, {
         'width': 'container',
         'height': 400,
         "mark": {"type": "bar"},
@@ -156,12 +131,12 @@ if active_tab == 'Home':
         "view": {"stroke": None}
     }, use_container_width=True)
 
-    st.subheader("Density Plot of Ratings")
-    st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)} and "
-                f"George's average score is {np.round(george_average_score, 2)}. "
-                f"Therefore, {mean_bastard} is a mean Bastard.")
+st.subheader("Density Plot of Ratings")
+st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)} and "
+            f"George's average score is {np.round(george_average_score, 2)}. "
+            f"Therefore, {mean_bastard} is a mean Bastard.")
 
-    st.vega_lite_chart(file, {
+st.vega_lite_chart(file, {
         "width": 400,
         "height": 300,
         "transform": [
@@ -240,10 +215,10 @@ if active_tab == 'Home':
 
     }, use_container_width=True)
 
-    st.subheader("Average Film Ratings for All Time")
-    st.markdown(f'The highest rated film so far is {highest_rated_film[0]}.')
+st.subheader("Average Film Ratings for All Time")
+st.markdown(f'The highest rated film so far is {highest_rated_film[0]}.')
 
-    st.vega_lite_chart(file, {
+st.vega_lite_chart(file, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
@@ -258,11 +233,11 @@ if active_tab == 'Home':
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)
 
-    st.subheader("Rating Difference of George Minus Qiqi")
-    st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than'
-                ' Qiqi.')
+st.subheader("Rating Difference of George Minus Qiqi")
+st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than'
+            ' Qiqi.')
 
-    st.vega_lite_chart(file, {
+st.vega_lite_chart(file, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},

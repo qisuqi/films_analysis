@@ -95,17 +95,21 @@ st.vega_lite_chart(file, {
             "color": {
                 "field": "Genre",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"}
+                "scale": {"scheme": "tableau20"},
+                "legend": {"orient": "left"}
             }
         },
         "view": {"stroke": None}
     }, use_container_width=True)
 
-st.subheader("Total Score per Genre")
+st.subheader("Average Score of Top Five Genres")
 st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
             f"{round(rating_of_most_watched_genre, 2)}.")
 
-st.vega_lite_chart(file, {
+top5_genre = file['Genre'].value_counts()[:5].index.tolist()
+file1 = file[file['Genre'].isin(top5_genre)]
+
+st.vega_lite_chart(file1, {
         'width': 'container',
         'height': 400,
         "mark": {"type": "bar"},
@@ -113,18 +117,19 @@ st.vega_lite_chart(file, {
             "y": {"field": "Genre",
                   "sort": "-x",
                   "title": None},
-            "x": {"aggregate": "sum",
+            "x": {"aggregate": "mean",
                   "field": "Mean",
                   "title": "Total Score",
                   "type": "quantitative"},
             "color": {
                 "field": "Genre",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"}
+                "scale": {"scheme": "tableau20"},
+                "legend": {"orient": "left"}
             },
             "tooltip": [
                 {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
-                {"field": "Genre", "title": "Genre"}
+                {"aggregate": "count", "title": "No.of Films", "field": "Genre"}
             ],
         },
 
@@ -164,7 +169,8 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Average"}
+                    "color": {"datum": "Average",
+                              "legend": {"orient": "left"}}
                 }
             },
             {
@@ -186,7 +192,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "George"}
+                    "color": {"datum": "George", "legend": {"orient": "left"}}
                 }
             },
             {
@@ -208,7 +214,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Qiqi"}
+                    "color": {"datum": "Qiqi", "legend": {"orient": "left"}}
                 }
             }
         ]
@@ -228,7 +234,10 @@ st.vega_lite_chart(file, {
                   "title": "Score"},
             "y": {"field": "Name",
                   "sort": "-x",
-                  "title": None}
+                  "title": None},
+            "color": {"field": "Genre",
+                      "scale": {"scheme": "tableau20"},
+                      "legend": {"orient": "left"}}
         },
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

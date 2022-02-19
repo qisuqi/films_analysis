@@ -251,23 +251,29 @@ st.vega_lite_chart(file, {
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
         "transform": [
-            {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
-            {"filter": "datum.diff != 0"},
-            {"filter": "datum.Qiqi != 0"},
-            {"filter": "datum.George != 0"},
-            {"filter": "datum.Mean != 0"},
+            {"calculate": "-datum.George", "as": "george_minus"}
         ],
-        "encoding": {
-            "x": {"field": "diff",
-                  "type": "quantitative",
-                  "title": "Score"},
-            "y": {"field": "Name",
-                  "sort": "-x",
-                  "title": None},
-            "color": {
-                "condition": {"test": "datum.diff>0", "value": "green"},
-                "value": "red"
+        "layers": [
+            {
+                "encoding": {
+                    "x": {"field": "george_minus",
+                          "type": "quantitative",
+                          "title": "Score"},
+                    "y": {"field": "Name",
+                          "sort": "-x",
+                          "title": None}
+                }
+            },
+            {
+                "encoding": {
+                    "x": {"field": "Qiqi",
+                          "type": "quantitative",
+                          "title": "Score"},
+                    "y": {"field": "Name",
+                          "sort": "-x",
+                          "title": None}
+                }
             }
-        },
+        ],
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

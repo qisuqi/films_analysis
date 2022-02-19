@@ -110,8 +110,7 @@ st.vega_lite_chart(file, {
             "color": {
                 "field": "Genre",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"},
-                "legend": {"orient": "left"}
+                "scale": {"scheme": "tableau20"}
             }
         },
         "view": {"stroke": None}
@@ -139,8 +138,7 @@ st.vega_lite_chart(file1, {
             "color": {
                 "field": "Genre",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"},
-                "legend": {"orient": "left"}
+                "scale": {"scheme": "tableau20"}
             },
             "tooltip": [
                 {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
@@ -184,8 +182,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Average",
-                              "legend": {"orient": "left"}}
+                    "color": {"datum": "Average"}
                 }
             },
             {
@@ -207,7 +204,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "George", "legend": {"orient": "left"}}
+                    "color": {"datum": "George"}
                 }
             },
             {
@@ -229,7 +226,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Qiqi", "legend": {"orient": "left"}}
+                    "color": {"datum": "Qiqi"}
                 }
             }
         ]
@@ -251,8 +248,7 @@ st.vega_lite_chart(file, {
                   "sort": "-x",
                   "title": None},
             "color": {"field": "Genre",
-                      "scale": {"scheme": "tableau20"},
-                      "legend": {"orient": "left"}}
+                      "scale": {"scheme": "tableau20"}}
         },
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

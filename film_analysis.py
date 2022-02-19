@@ -41,8 +41,8 @@ no_most_watched_genre = file['Genre'].value_counts().values.tolist()[0]
 most_watched_genre_df = file[file['Genre'] == most_watched_genre]
 rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 
-all_genre = [x for x in file['Genre'].unique()] and [x for x in file['Sub-Genre'].unique()]
-all_genre = list(sorted(filter(None, all_genre)))
+all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
+all_genre = list(sorted(set(filter(None, all_genre))))
 
 qiqi_average_score = np.average(file['Qiqi'])
 george_average_score = np.average(file['George'])

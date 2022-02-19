@@ -42,7 +42,9 @@ most_watched_genre_df = file[file['Genre'] == most_watched_genre]
 rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 
 all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
-all_genre = list(sorted(set(filter(None, all_genre))))
+genre = list(sorted(set(filter(None, all_genre))))
+sub_genre = list(sorted(set(filter(None, all_genre))))
+sub_genre.append('N/A')
 
 qiqi_average_score = np.average(file['Qiqi'])
 george_average_score = np.average(file['George'])
@@ -65,8 +67,8 @@ with st.form(key='Submit Films'):
         st.sidebar.markdown("## Submit Films")
         Name = st.sidebar.text_input("Film Name", key="Name")
         Director = st.sidebar.text_input('Director', key='Director')
-        Genre = st.sidebar.selectbox('Genre', all_genre)
-        Sub_Genre = st.sidebar.selectbox('Sub-Genre', all_genre)
+        Genre = st.sidebar.selectbox('Genre', genre)
+        Sub_Genre = st.sidebar.selectbox('Sub-Genre', sub_genre)
         George = st.sidebar.number_input("George's Score", key="George", min_value=0, max_value=10, step=1)
         Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0, max_value=10, step=1)
         BoB = st.sidebar.radio('Based on Books?', ('Y', 'N'))
@@ -74,9 +76,22 @@ with st.form(key='Submit Films'):
 
 if submit_button:
     mean = (George + Qiqi)/2
-    info = [Name, Genre, '', Qiqi, George, mean, Director, BoB]
-    sheet.append_row(info)
-    file = gsheet2df(sheet)
+    if Sub_Genre == 'N/A':
+        info = [Name, Genre, '', Qiqi, George, mean, Director, BoB]
+    else:
+        info = [Name, Genre, Sub_Genre, Qiqi, George, mean, Director, BoB]
+
+    if Name in file['Name'].unique():
+        st.write('You are updating the record')
+        cell = sheet.find(Name)
+        sheet.update_cell(cell.row, 4, Qiqi)
+        sheet.update_cell(cell.row, 5, George)
+        sheet.update_cell(cell.row, 6, mean)
+        file = gsheet2df(sheet)
+    else:
+        sheet.append_row(info)
+        file = gsheet2df(sheet)
+
 
 st.title('Analysing Films Watched by Butler-Su')
 
@@ -249,31 +264,29 @@ st.markdown('Films with red bars means Qiqi liked more than George, and green me
 st.vega_lite_chart(file, {
         "width": "container",
         "height": 500,
-        "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
+        "mark": {"type": "bar", "cornerRadiusEnd": 4},
         "transform": [
-            {"calculate": "-datum.George", "as": "george_minus"}
+            {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
+            {"filter": "datum.diff != 0"},
+            {"filter": "datum.Qiqi != 0"},
+            {"filter": "datum.George != 0"},
+            {"filter": "datum.Mean != 0"},
         ],
-        "layers": [
-            {
-                "encoding": {
-                    "x": {"field": "george_minus",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None}
-                }
+        "encoding": {
+            "x": {"field": "diff",
+                  "type": "quantitative",
+                  "title": "Score"},
+            "y": {"field": "Name",
+                  "sort": "-x",
+                  "title": None},
+            "color": {
+                "condition": {"test": "datum.diff>0", "value": "green"},
+                "value": "red"
             },
-            {
-                "encoding": {
-                    "x": {"field": "Qiqi",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None}
-                }
-            }
-        ],
+            "tooltip": [
+                {"field": "Qiqi"},
+                {"field": "George"}
+            ]
+        },
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

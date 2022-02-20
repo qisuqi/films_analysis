@@ -257,7 +257,6 @@ select_graph = st.radio('Sort by:', ('Alphabetical', 'Score'))
 if select_graph == 'Score':
     st.vega_lite_chart(file, {
             "width": "container",
-            "height": 500,
             "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
             "encoding": {
                 "x": {"field": "Mean",
@@ -274,7 +273,6 @@ if select_graph == 'Score':
 else:
     st.vega_lite_chart(file, {
         "width": "container",
-        "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
         "encoding": {
             "x": {"field": "Mean",

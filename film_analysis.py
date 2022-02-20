@@ -53,7 +53,6 @@ if george_average_score < qiqi_average_score:
     mean_bastard = 'George'
 elif qiqi_average_score < george_average_score:
     mean_bastard = 'Qiqi'
-
 else:
     mean_bastard = 'No one'
 
@@ -102,38 +101,49 @@ st.title('Analysing Films Watched by Butler-Su')
 
 output_graphs = st.container()
 
+file1 = pd.melt(file, id_vars='Name', value_vars=['Genre', 'Sub-Genre'])
+file1['value'].replace('', np.nan, inplace=True)
+file1.dropna(subset=["value"], inplace=True)
+
 st.subheader("Number of Films Watched per Genre")
 st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
             f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
 
-st.vega_lite_chart(file, {
+st.vega_lite_chart(file1, {
         'width': 'container',
         'height': 400,
-        "mark": {"type": "arc", "tooltip": {"content": "encoding"}, "innerRadius": 50},
+        "mark": {"type": "arc", "innerRadius": 50},
         "encoding": {
             "theta": {"aggregate": "count", "title": "No. of Films"},
             "color": {
-                "field": "Genre",
+                "field": "value",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"}
-            }
+                "scale": {"scheme": "tableau20"},
+                "legend": {"title": "Genre"}
+            },
+            "tooltip": [
+                {"field": "value", "title": "Genre"},
+                {"aggregate": "count", "title": "No.of Films", "field": "value"}
+            ],
         },
         "view": {"stroke": None}
     }, use_container_width=True)
+
+top5_genre = file1['value'].value_counts()[:5].index.tolist()
+file2 = file1[file1['value'].isin(top5_genre)]
+file3 = file[['Name', 'Mean']]
+file4 = pd.merge(file2, file3, on='Name')
 
 st.subheader("Average Score of Top Five Genres")
 st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
             f"{round(rating_of_most_watched_genre, 2)}.")
 
-top5_genre = file['Genre'].value_counts()[:5].index.tolist()
-file1 = file[file['Genre'].isin(top5_genre)]
-
-st.vega_lite_chart(file1, {
+st.vega_lite_chart(file4, {
         'width': 'container',
         'height': 400,
         "mark": {"type": "bar"},
         "encoding": {
-            "y": {"field": "Genre",
+            "y": {"field": "value",
                   "sort": "-x",
                   "title": None},
             "x": {"aggregate": "mean",
@@ -141,13 +151,14 @@ st.vega_lite_chart(file1, {
                   "title": "Total Score",
                   "type": "quantitative"},
             "color": {
-                "field": "Genre",
+                "field": "value",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"}
+                "scale": {"scheme": "tableau20"},
+                "legend": {"title": "Genre"}
             },
             "tooltip": [
                 {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
-                {"aggregate": "count", "title": "No.of Films", "field": "Genre"}
+                {"aggregate": "count", "title": "No.of Films", "field": "value"}
             ],
         },
 

@@ -75,7 +75,12 @@ with st.form(key='Submit Films'):
         submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:
-    mean = (George + Qiqi)/2
+    if Qiqi == 0:
+        mean = George
+    elif George == 0:
+        mean = Qiqi
+    else:
+        mean = (George + Qiqi)/2
     if Sub_Genre == 'N/A':
         info = [Name, Genre, '', Qiqi, George, mean, Director, BoB]
     else:
@@ -236,7 +241,27 @@ st.vega_lite_chart(file, {
 st.subheader("Average Film Ratings for All Time")
 st.markdown(f'The highest rated film so far is {highest_rated_film[0]}.')
 
-st.vega_lite_chart(file, {
+select_graph = st.radio('Sort by:', ('Alphabetical', 'Score'))
+
+if select_graph == 'Score':
+    st.vega_lite_chart(file, {
+            "width": "container",
+            "height": 500,
+            "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
+            "encoding": {
+                "x": {"field": "Mean",
+                      "type": "quantitative",
+                      "title": "Score"},
+                "y": {"field": "Name",
+                      "sort": "-x",
+                      "title": None},
+                "color": {"field": "Genre",
+                          "scale": {"scheme": "tableau20"}}
+            },
+            "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
+        }, use_container_width=True)
+else:
+    st.vega_lite_chart(file, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
@@ -245,7 +270,6 @@ st.vega_lite_chart(file, {
                   "type": "quantitative",
                   "title": "Score"},
             "y": {"field": "Name",
-                  "sort": "-x",
                   "title": None},
             "color": {"field": "Genre",
                       "scale": {"scheme": "tableau20"}}

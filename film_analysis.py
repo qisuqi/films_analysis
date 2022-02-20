@@ -69,8 +69,8 @@ with st.form(key='Submit Films'):
         Director = st.sidebar.text_input('Director', key='Director')
         Genre = st.sidebar.selectbox('Genre', genre)
         Sub_Genre = st.sidebar.selectbox('Sub-Genre', sub_genre)
-        George = st.sidebar.number_input("George's Score", key="George", min_value=0, max_value=10, step=1)
-        Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0, max_value=10, step=1)
+        George = st.sidebar.number_input("George's Score", key="George", min_value=0.0, max_value=10.0, step=0.5)
+        Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0.0, max_value=10.0, step=0.5)
         BoB = st.sidebar.radio('Based on Books?', ('Y', 'N'))
         submit_button = st.form_submit_button(label='Submit')
 

@@ -109,8 +109,8 @@ with col1:
     file_col1['value'].replace('', np.nan, inplace=True)
     file_col1.dropna(subset=["value"], inplace=True)
 
-    most_watched_genre = file_col1['Genre'].value_counts().index.tolist()[0]
-    no_most_watched_genre = file_col1['Genre'].value_counts().values.tolist()[0]
+    most_watched_genre = file_col1['value'].value_counts().index.tolist()[0]
+    no_most_watched_genre = file_col1['value'].value_counts().values.tolist()[0]
 
     st.subheader("Number of Films Watched per Genre")
     st.markdown(f"So far, the most watched genre is {most_watched_genre} with "

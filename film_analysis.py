@@ -35,10 +35,12 @@ total_films = len(file)
 highest_score = file['Mean'].max()
 highest_rated_film = file.loc[file['Mean'] == highest_score, 'Name'].values.tolist()
 
-all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
+all_genre = ['Drama', 'Action', 'Horror', 'Comedy', 'Thriller', 'Sci-fi', 'Romance', 'Western', 'Crime', 'Adventure',
+             'Fantasy', 'Historical', 'War', 'Noir', 'Mystery', 'Gangster', 'Psychological Thriller', 'Rom Com',
+             'Superhero', 'Anime']
 genre = list(sorted(set(filter(None, all_genre))))
 sub_genre = list(sorted(set(filter(None, all_genre))))
-sub_genre.append('N/A')
+sub_genre.insert(0, 'N/A')
 
 qiqi_array = np.array(file['Qiqi'])
 george_aray = np.array(file['George'])

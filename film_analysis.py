@@ -208,7 +208,7 @@ with col3:
                 "field": "Director",
                 "type": "nominal",
                 "scale": {"scheme": "tableau20"},
-                "legend": {"title": "Genre"}
+                "legend": {"title": "Director"}
             },
             "tooltip": [
                 {"field": "Director", "title": "Director"},
@@ -243,7 +243,7 @@ with col4:
                 "field": "Director",
                 "type": "nominal",
                 "scale": {"scheme": "tableau20"},
-                "legend": {"title": "Genre"}
+                "legend": {"title": "Director"}
             },
             "tooltip": [
                 {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
@@ -375,17 +375,22 @@ else:
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)
 
-st.subheader("Rating Difference of George Minus Qiqi")
-st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than'
-            ' Qiqi.')
+file_diff = file[~(file == 0).any(axis=1)]
+file_diff['Diff'] = (file_diff['George'] - file_diff['Qiqi']).abs()
+max_diff = file_diff['Diff'].max()
+most_disagreed_film = file_diff[file_diff['Diff'] == max_diff].values.tolist()[0][0]
 
-st.vega_lite_chart(file, {
+st.subheader("Rating Difference of George Minus Qiqi")
+st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than '
+            f'Qiqi. The most disagreed film so far is {most_disagreed_film}.')
+
+st.vega_lite_chart(file_diff, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4},
         "transform": [
             {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
-            {"filter": "datum.diff != 0"},
+            {"filter": "datum.Diff != 0"},
             {"filter": "datum.Qiqi != 0"},
             {"filter": "datum.George != 0"},
             {"filter": "datum.Mean != 0"},

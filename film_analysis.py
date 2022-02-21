@@ -35,12 +35,6 @@ total_films = len(file)
 highest_score = file['Mean'].max()
 highest_rated_film = file.loc[file['Mean'] == highest_score, 'Name'].values.tolist()
 
-most_watched_genre = file['Genre'].value_counts().index.tolist()[0]
-no_most_watched_genre = file['Genre'].value_counts().values.tolist()[0]
-
-most_watched_genre_df = file[file['Genre'] == most_watched_genre]
-rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
-
 all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
 genre = list(sorted(set(filter(None, all_genre))))
 sub_genre = list(sorted(set(filter(None, all_genre))))
@@ -115,6 +109,9 @@ with col1:
     file_col1['value'].replace('', np.nan, inplace=True)
     file_col1.dropna(subset=["value"], inplace=True)
 
+    most_watched_genre = file_col1['Genre'].value_counts().index.tolist()[0]
+    no_most_watched_genre = file_col1['Genre'].value_counts().values.tolist()[0]
+
     st.subheader("Number of Films Watched per Genre")
     st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
                 f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
@@ -140,6 +137,11 @@ with col1:
 
 
 with col2:
+    most_watched_genre_df = file_col1[file_col1['value'] == most_watched_genre]
+    all_score = file[['Name', 'Mean']]
+    all_genre_score = pd.merge(most_watched_genre_df, all_score, on='Name')
+    rating_of_most_watched_genre = np.average(all_genre_score['Mean'])
+
     top5_genre = file_col1['value'].value_counts()[:5].index.tolist()
     file_col2_1 = file_col1[file_col1['value'].isin(top5_genre)]
     file_col2_2 = file[['Name', 'Mean']]

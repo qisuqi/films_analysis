@@ -46,8 +46,10 @@ genre = list(sorted(set(filter(None, all_genre))))
 sub_genre = list(sorted(set(filter(None, all_genre))))
 sub_genre.append('N/A')
 
-qiqi_average_score = np.average(file['Qiqi'])
-george_average_score = np.average(file['George'])
+qiqi_array = np.array(file['Qiqi'])
+george_aray = np.array(file['George'])
+qiqi_average_score = np.average(qiqi_array[qiqi_array != 0])
+george_average_score = np.average(george_aray[george_aray != 0])
 
 if george_average_score < qiqi_average_score:
     mean_bastard = 'George'
@@ -55,6 +57,11 @@ elif qiqi_average_score < george_average_score:
     mean_bastard = 'Qiqi'
 else:
     mean_bastard = 'No one'
+
+st.set_page_config(
+     layout="wide",
+     initial_sidebar_state="expanded",
+)
 
 st.markdown(
     '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">',
@@ -99,46 +106,57 @@ if submit_button:
 
 st.title('Analysing Films Watched by Butler-Su')
 
-output_graphs = st.container()
+#output_graphs = st.container()
 
-file1 = pd.melt(file, id_vars='Name', value_vars=['Genre', 'Sub-Genre'])
-file1['value'].replace('', np.nan, inplace=True)
-file1.dropna(subset=["value"], inplace=True)
+col1, col2 = st.columns(2)
 
-st.subheader("Number of Films Watched per Genre")
-st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
-            f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
+with col1:
+    file_col1 = pd.melt(file, id_vars='Name', value_vars=['Genre', 'Sub-Genre'])
+    file_col1['value'].replace('', np.nan, inplace=True)
+    file_col1.dropna(subset=["value"], inplace=True)
 
-st.vega_lite_chart(file1, {
-        'width': 'container',
-        'height': 400,
-        "mark": {"type": "arc", "innerRadius": 50},
-        "encoding": {
-            "theta": {"aggregate": "count", "title": "No. of Films"},
-            "color": {
-                "field": "value",
-                "type": "nominal",
-                "scale": {"scheme": "tableau20"},
-                "legend": {"title": "Genre"}
+    st.subheader("Number of Films Watched per Genre")
+    st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
+                f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
+
+    st.vega_lite_chart(file_col1, {
+            'height': 400,
+            "mark": {"type": "arc", "innerRadius": 50},
+            "encoding": {
+                "theta": {"aggregate": "count", "title": "No. of Films"},
+                "color": {
+                    "field": "value",
+                    "type": "nominal",
+                    "scale": {"scheme": "tableau20"},
+                    "legend": {"title": "Genre"}
+                },
+                "tooltip": [
+                    {"field": "value", "title": "Genre"},
+                    {"aggregate": "count", "title": "No.of Films", "field": "value"}
+                ],
             },
-            "tooltip": [
-                {"field": "value", "title": "Genre"},
-                {"aggregate": "count", "title": "No.of Films", "field": "value"}
-            ],
-        },
-        "view": {"stroke": None}
-    }, use_container_width=True)
+            "view": {"stroke": None}
+        }, use_container_width=True)
 
-top5_genre = file1['value'].value_counts()[:5].index.tolist()
-file2 = file1[file1['value'].isin(top5_genre)]
-file3 = file[['Name', 'Mean']]
-file4 = pd.merge(file2, file3, on='Name')
 
-st.subheader("Average Score of Top Five Genres")
-st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
-            f"{round(rating_of_most_watched_genre, 2)}.")
+with col2:
+    top5_genre = file_col1['value'].value_counts()[:5].index.tolist()
+    file_col2_1 = file_col1[file_col1['value'].isin(top5_genre)]
+    file_col2_2 = file[['Name', 'Mean']]
+    file_col2 = pd.merge(file_col2_1, file_col2_2, on='Name')
 
-st.vega_lite_chart(file4, {
+    avg_score_per_genre = file_col2.groupby(['value'], as_index=False).mean()
+    highest_avg_score_genre_score = avg_score_per_genre['Mean'].max()
+    highest_avg_score_genre = avg_score_per_genre[avg_score_per_genre['Mean']
+                                                  == highest_avg_score_genre_score].values.tolist()[0][0]
+
+    st.subheader("Average Score of Top Five Genres")
+    st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
+                f"{round(rating_of_most_watched_genre, 2)}. Whereas the genre with the highest "
+                f"average score is {highest_avg_score_genre} with an average score of "
+                f"{np.round(highest_avg_score_genre_score, 2)}.")
+
+    st.vega_lite_chart(file_col2, {
         'width': 'container',
         'height': 400,
         "mark": {"type": "bar"},
@@ -148,10 +166,81 @@ st.vega_lite_chart(file4, {
                   "title": None},
             "x": {"aggregate": "mean",
                   "field": "Mean",
-                  "title": "Total Score",
+                  "title": "Average Score",
                   "type": "quantitative"},
             "color": {
                 "field": "value",
+                "type": "nominal",
+                "scale": {"scheme": "tableau20"},
+                "legend": {"title": "Genre"}
+            },
+            "tooltip": [
+                {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
+                {"aggregate": "count", "title": "No.of Films", "field": "value"}
+            ],
+        },
+
+        "view": {"stroke": None}
+    }, use_container_width=True)
+
+
+col3, col4 = st.columns(2)
+
+with col3:
+    top10_director = file['Director'].value_counts()[:10].index.tolist()
+    top10_director_df = file[file['Director'].isin(top10_director)]
+    top10_director_df['Director'].replace('', np.nan, inplace=True)
+    top10_director_df.dropna(subset=["Director"], inplace=True)
+
+    most_watched_director = top10_director_df['Director'].value_counts().index.tolist()[0]
+    no_most_watched_director = top10_director_df['Director'].value_counts().values.tolist()[0]
+
+    st.subheader("Number of Films Watched per Top Ten Director")
+    st.markdown(f"So far, the most watched Director is {most_watched_director} with "
+                f"{no_most_watched_director} films out of a total of {total_films} watched.")
+
+    st.vega_lite_chart(top10_director_df, {
+        'height': 400,
+        "mark": {"type": "arc", "innerRadius": 50},
+        "encoding": {
+            "theta": {"aggregate": "count", "title": "No. of Films"},
+            "color": {
+                "field": "Director",
+                "type": "nominal",
+                "scale": {"scheme": "tableau20"},
+                "legend": {"title": "Genre"}
+            },
+            "tooltip": [
+                {"field": "Director", "title": "Director"},
+                {"aggregate": "count", "title": "No.of Films", "field": "value"}
+            ],
+        },
+        "view": {"stroke": None}
+    }, use_container_width=True)
+
+with col4:
+    avg_score_per_director = top10_director_df.groupby(['Director'], as_index=False).mean()
+    highest_avg_score_director_score = avg_score_per_director['Mean'].max()
+    highest_avg_score_director = avg_score_per_director[avg_score_per_director['Mean']
+                                                        == highest_avg_score_director_score].values.tolist()[0][0]
+
+    st.subheader("Average Score of Top Ten Directors")
+    st.markdown(f"The average score of the most watched Director, {highest_avg_score_director}, is "
+                f"{round(highest_avg_score_director_score, 2)}.")
+
+    st.vega_lite_chart(top10_director_df, {
+        'height': 400,
+        "mark": {"type": "bar"},
+        "encoding": {
+            "y": {"field": "Director",
+                  "sort": "-x",
+                  "title": None},
+            "x": {"aggregate": "mean",
+                  "field": "Mean",
+                  "title": "Average Score",
+                  "type": "quantitative"},
+            "color": {
+                "field": "Director",
                 "type": "nominal",
                 "scale": {"scheme": "tableau20"},
                 "legend": {"title": "Genre"}
@@ -257,7 +346,6 @@ select_graph = st.radio('Sort by:', ('Alphabetical', 'Score'))
 if select_graph == 'Score':
     st.vega_lite_chart(file, {
             "width": "container",
-            "height": 500,
             "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
             "encoding": {
                 "x": {"field": "Mean",
@@ -274,7 +362,6 @@ if select_graph == 'Score':
 else:
     st.vega_lite_chart(file, {
         "width": "container",
-        "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
         "encoding": {
             "x": {"field": "Mean",

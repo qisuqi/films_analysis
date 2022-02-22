@@ -35,7 +35,9 @@ total_films = len(file)
 highest_score = file['Mean'].max()
 highest_rated_film = file.loc[file['Mean'] == highest_score, 'Name'].values.tolist()
 
-all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
+all_genre = ['Drama', 'Action', 'Horror', 'Comedy', 'Thriller', 'Sci-fi', 'Romance', 'Western', 'Crime', 'Adventure',
+             'Fantasy', 'Historical', 'War', 'Noir', 'Mystery', 'Gangster', 'Psychological Thriller', 'Rom Com',
+             'Superhero', 'Anime', 'Dark Comedy', 'Hidden Camera', 'Suspense']
 genre = list(sorted(set(filter(None, all_genre))))
 sub_genre = list(sorted(set(filter(None, all_genre))))
 sub_genre.insert(0, 'N/A')
@@ -112,9 +114,6 @@ with col1:
     most_watched_genre = file_col1['value'].value_counts().index.tolist()[0]
     no_most_watched_genre = file_col1['value'].value_counts().values.tolist()[0]
 
-    most_watched_genre_df = file[file['Genre'] == most_watched_genre]
-    most_watched_genre_df.sort_values(by=['Mean'])
-
     st.subheader("Number of Films Watched per Genre")
     st.markdown(f"So far, the most watched genre is {most_watched_genre} with "
                 f"{no_most_watched_genre} {most_watched_genre} films out of a total of {total_films} watched.")
@@ -138,6 +137,9 @@ with col1:
             "view": {"stroke": None}
         }, use_container_width=True)
 
+    most_watched_genre_df = file[file['Genre'] == most_watched_genre]
+    most_watched_genre_df = most_watched_genre_df.sort_values(by=['Mean'], ascending=False)
+
     with st.expander("See more info"):
         st.markdown(f"Some of the top rated {most_watched_genre} films include: "
                     f"**{most_watched_genre_df.values.tolist()[0][0]}**,"
@@ -159,9 +161,6 @@ with col2:
     highest_avg_score_genre_score = avg_score_per_genre['Mean'].max()
     highest_avg_score_genre = avg_score_per_genre[avg_score_per_genre['Mean']
                                                   == highest_avg_score_genre_score].values.tolist()[0][0]
-
-    highest_avg_score_genre_df = file[file['Genre'] == highest_avg_score_genre]
-    highest_avg_score_genre_df.sort_values(by=['Mean'])
 
     st.subheader("Average Score of Top Five Genres")
     st.markdown(f"The average score of the most watched genre, {most_watched_genre}, is "
@@ -195,6 +194,9 @@ with col2:
 
         "view": {"stroke": None}
     }, use_container_width=True)
+
+    highest_avg_score_genre_df = file[file['Genre'] == highest_avg_score_genre]
+    highest_avg_score_genre_df = highest_avg_score_genre_df.sort_values(by=['Mean'], ascending=False)
 
     with st.expander("See more info"):
         st.markdown(f"Some of the top rated {highest_avg_score_genre} films include: "
@@ -274,7 +276,7 @@ with col4:
     }, use_container_width=True)
 
 highest_avg_score_director_df = file[file['Director'] == highest_avg_score_director]
-highest_avg_score_director_df.sort_values(by=['Mean'])
+highest_avg_score_director_df = highest_avg_score_director_df.sort_values(by=['Mean'], ascending=False)
 
 with st.expander("See more info"):
     st.markdown(f"Some of the top rated {highest_avg_score_director}'s films include: "
@@ -418,7 +420,7 @@ st.vega_lite_chart(file_diff, {
         "mark": {"type": "bar", "cornerRadiusEnd": 4},
         "transform": [
             {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
-            {"filter": "datum.Diff != 0"},
+            {"filter": "datum.diff != 0"},
             {"filter": "datum.Qiqi != 0"},
             {"filter": "datum.George != 0"},
             {"filter": "datum.Mean != 0"},

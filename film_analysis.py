@@ -42,6 +42,7 @@ genre = list(sorted(set(filter(None, all_genre))))
 sub_genre = list(sorted(set(filter(None, all_genre))))
 sub_genre.insert(0, 'N/A')
 
+print(genre)
 qiqi_array = np.array(file['Qiqi'])
 george_aray = np.array(file['George'])
 qiqi_average_score = np.average(qiqi_array[qiqi_array != 0])
@@ -126,8 +127,20 @@ with col1:
                 "color": {
                     "field": "value",
                     "type": "nominal",
-                    "scale": {"scheme": "tableau20"},
-                    "legend": {"title": "Genre"}
+                    "legend": {"title": "Genre"},
+                    "scale": {
+                        "domain": [
+                            'Action', 'Adventure', 'Anime', 'Comedy', 'Crime', 'Dark Comedy', 'Drama', 'Fantasy',
+                            'Gangster', 'Hidden Camera', 'Historical', 'Horror', 'Mystery', 'Noir',
+                            'Psychological Thriller', 'Rom Com', 'Romance', 'Sci-fi', 'Superhero', 'Suspense',
+                            'Thriller', 'War', 'Western'
+                        ],
+                        "range": [
+                            '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896',
+                            '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
+                            '#bcbd22', '#dbdb0e', '#17becf', '#9edae5', '#c85200', '#b10318', '#ff0055', '#1d539e'
+                        ]
+                    }
                 },
                 "tooltip": [
                     {"field": "value", "title": "Genre"},
@@ -183,8 +196,20 @@ with col2:
             "color": {
                 "field": "value",
                 "type": "nominal",
-                "scale": {"scheme": "tableau20"},
-                "legend": {"title": "Genre"}
+                "legend": None,
+                "scale": {
+                    "domain": [
+                            'Action', 'Adventure', 'Anime', 'Comedy', 'Crime', 'Dark Comedy', 'Drama', 'Fantasy',
+                            'Gangster', 'Hidden Camera', 'Historical', 'Horror', 'Mystery', 'Noir',
+                            'Psychological Thriller', 'Rom Com', 'Romance', 'Sci-fi', 'Superhero', 'Suspense',
+                            'Thriller', 'War', 'Western'
+                    ],
+                    "range": [
+                        '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896',
+                        '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
+                        '#bcbd22', '#dbdb0e', '#17becf', '#9edae5', '#c85200', '#b10318', '#ff0055', '#1d539e'
+                    ]
+                }
             },
             "tooltip": [
                 {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
@@ -384,8 +409,23 @@ if select_graph == 'Score':
                 "y": {"field": "Name",
                       "sort": "-x",
                       "title": None},
-                "color": {"field": "Genre",
-                          "scale": {"scheme": "tableau20"}}
+                "color": {
+                    "field": "Genre",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": [
+                                'Action', 'Adventure', 'Anime', 'Comedy', 'Crime', 'Dark Comedy', 'Drama', 'Fantasy',
+                                'Gangster', 'Hidden Camera', 'Historical', 'Horror', 'Mystery', 'Noir',
+                                'Psychological Thriller', 'Rom Com', 'Romance', 'Sci-fi', 'Superhero', 'Suspense',
+                                'Thriller', 'War', 'Western'
+                        ],
+                        "range": [
+                            '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896',
+                            '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
+                            '#bcbd22', '#dbdb0e', '#17becf', '#9edae5', '#c85200', '#b10318', '#ff0055', '#1d539e'
+                        ]
+                    }
+                },
             },
             "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
         }, use_container_width=True)
@@ -399,8 +439,23 @@ else:
                   "title": "Score"},
             "y": {"field": "Name",
                   "title": None},
-            "color": {"field": "Genre",
-                      "scale": {"scheme": "tableau20"}}
+            "color": {
+                "field": "Genre",
+                "type": "nominal",
+                "scale": {
+                    "domain": [
+                            'Action', 'Adventure', 'Anime', 'Comedy', 'Crime', 'Dark Comedy', 'Drama', 'Fantasy',
+                            'Gangster', 'Hidden Camera', 'Historical', 'Horror', 'Mystery', 'Noir',
+                            'Psychological Thriller', 'Rom Com', 'Romance', 'Sci-fi', 'Superhero', 'Suspense',
+                            'Thriller', 'War', 'Western'
+                    ],
+                    "range": [
+                        '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896',
+                        '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
+                        '#bcbd22', '#dbdb0e', '#17becf', '#9edae5', '#c85200', '#b10318', '#ff0055', '#1d539e'
+                    ]
+                }
+            },
         },
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

@@ -43,17 +43,10 @@ sub_genre = list(sorted(set(filter(None, all_genre))))
 sub_genre.insert(0, 'N/A')
 
 print(genre)
-qiqi_array = np.array(file['Qiqi'])
-george_aray = np.array(file['George'])
-qiqi_average_score = np.average(qiqi_array[qiqi_array != 0])
-george_average_score = np.average(george_aray[george_aray != 0])
-
-if george_average_score < qiqi_average_score:
-    mean_bastard = 'George'
-elif qiqi_average_score < george_average_score:
-    mean_bastard = 'Qiqi'
-else:
-    mean_bastard = 'No one'
+usr1_array = np.array(file['usr1'])
+usr2_aray = np.array(file['usr2'])
+usr1_average_score = np.average(usr1_array[usr1_array != 0])
+usr2_average_score = np.average(usr2_aray[usr2_aray != 0])
 
 st.set_page_config(
      layout="wide",
@@ -72,28 +65,28 @@ with st.form(key='Submit Films'):
         Director = st.sidebar.text_input('Director', key='Director')
         Genre = st.sidebar.selectbox('Genre', genre)
         Sub_Genre = st.sidebar.selectbox('Sub-Genre', sub_genre)
-        George = st.sidebar.number_input("George's Score", key="George", min_value=0.0, max_value=10.0, step=0.5)
-        Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0.0, max_value=10.0, step=0.5)
+        usr2 = st.sidebar.number_input("usr2's Score", key="usr2", min_value=0.0, max_value=10.0, step=0.5)
+        usr1 = st.sidebar.number_input("usr1's Score", key="usr1", min_value=0.0, max_value=10.0, step=0.5)
         BoB = st.sidebar.radio('Based on Books?', ('Y', 'N'))
         submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:
-    if Qiqi == 0:
-        mean = George
-    elif George == 0:
-        mean = Qiqi
+    if usr1 == 0:
+        mean = usr2
+    elif usr2 == 0:
+        mean = usr1
     else:
-        mean = (George + Qiqi)/2
+        mean = (Geousr2rge + usr1)/2
     if Sub_Genre == 'N/A':
-        info = [Name, Genre, '', Qiqi, George, mean, Director, BoB]
+        info = [Name, Genre, '', usr1, usr2, mean, Director, BoB]
     else:
-        info = [Name, Genre, Sub_Genre, Qiqi, George, mean, Director, BoB]
+        info = [Name, Genre, Sub_Genre, usr1, usr2, mean, Director, BoB]
 
     if Name in file['Name'].unique():
         st.write('You are updating the record')
         cell = sheet.find(Name)
-        sheet.update_cell(cell.row, 4, Qiqi)
-        sheet.update_cell(cell.row, 5, George)
+        sheet.update_cell(cell.row, 4, usr1)
+        sheet.update_cell(cell.row, 5, usr2)
         sheet.update_cell(cell.row, 6, mean)
         file = gsheet2df(sheet)
     else:
@@ -143,7 +136,7 @@ with col1:
                     }
                 },
                 "tooltip": [
-                    {"field": "value", "title": "Genre"},
+                    {"field": "value", "title": "Genre"},F
                     {"aggregate": "count", "title": "No.of Films", "field": "value"}
                 ],
             },
@@ -154,7 +147,7 @@ with col1:
     most_watched_genre_df = most_watched_genre_df.sort_values(by=['Mean'], ascending=False)
 
     with st.expander("See more info"):
-        st.markdown(f"Some of the top rated {most_watched_genre} films include: "
+        st.markdown(f"Some of the top rated {most_watched_genre} films include: "F
                     f"**{most_watched_genre_df.values.tolist()[0][0]}**,"
                     f"**{most_watched_genre_df.values.tolist()[1][0]}**,"
                     f"and **{most_watched_genre_df.values.tolist()[2][0]}**.")
@@ -310,16 +303,16 @@ with st.expander("See more info"):
                 f"and **{highest_avg_score_director_df.values.tolist()[2][0]}**.")
 
 st.subheader("Density Plot of Ratings")
-st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)} and "
-            f"George's average score is {np.round(george_average_score, 2)}. "
+st.markdown(f"usr1's average score is {np.round(usr1_average_score, 2)} and "
+            f"usr2's average score is {np.round(usr2_average_score, 2)}. "
             f"Therefore, {mean_bastard} is a mean Bastard.")
 
 st.vega_lite_chart(file, {
         "width": 400,
         "height": 300,
         "transform": [
-            {"filter": "datum.Qiqi != 0"},
-            {"filter": "datum.George != 0"},
+            {"filter": "datum.usr1 != 0"},
+            {"filter": "datum.usr2 != 0"},
             {"filter": "datum.Mean != 0"},
         ],
         "layer": [
@@ -348,7 +341,7 @@ st.vega_lite_chart(file, {
             {
                 "transform": [
                     {
-                        "density": "George",
+                        "density": "usr2",
                         "bandwidth": 0.3
                     }
                 ],
@@ -364,13 +357,13 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "George"}
+                    "color": {"datum": "usr2"}
                 }
             },
             {
                 "transform": [
                     {
-                        "density": "Qiqi",
+                        "density": "usr1",
                         "bandwidth": 0.3
                     }
                 ],
@@ -386,7 +379,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Qiqi"}
+                    "color": {"datum": "usr1"}
                 }
             }
         ]
@@ -461,23 +454,23 @@ else:
     }, use_container_width=True)
 
 file_diff = file[~(file == 0).any(axis=1)]
-file_diff['Diff'] = (file_diff['George'] - file_diff['Qiqi']).abs()
+file_diff['Diff'] = (file_diff['usr2'] - file_diff['usr1']).abs()
 max_diff = file_diff['Diff'].max()
 most_disagreed_film = file_diff[file_diff['Diff'] == max_diff].values.tolist()[0][0]
 
-st.subheader("Rating Difference of George Minus Qiqi")
-st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than '
-            f'Qiqi. The most disagreed film so far is {most_disagreed_film}.')
+st.subheader("Rating Difference of usr2 Minus usr1")
+st.markdown('Films with red bars means usr1 liked more than usr2, and green means usr2 liked more than '
+            f'usr1. The most disagreed film so far is {most_disagreed_film}.')
 
 st.vega_lite_chart(file_diff, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4},
         "transform": [
-            {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
+            {"calculate": "datum.usr2-datum.usr1", "as": "diff"},
             {"filter": "datum.diff != 0"},
-            {"filter": "datum.Qiqi != 0"},
-            {"filter": "datum.George != 0"},
+            {"filter": "datum.usr1 != 0"},
+            {"filter": "datum.usr2 != 0"},
             {"filter": "datum.Mean != 0"},
         ],
         "encoding": {
@@ -492,8 +485,8 @@ st.vega_lite_chart(file_diff, {
                 "value": "red"
             },
             "tooltip": [
-                {"field": "Qiqi"},
-                {"field": "George"}
+                {"field": "usr1"},
+                {"field": "usr2"}
             ]
         },
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}

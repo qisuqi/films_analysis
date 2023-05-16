@@ -294,6 +294,7 @@ st.vega_lite_chart(file, {
         ],
         "layer": [
             {
+                "mark": "bar",
                 "encoding": {
                     "x": {"field": "george_minus",
                           "type": "quantitative",
@@ -304,6 +305,7 @@ st.vega_lite_chart(file, {
                 }
             },
             {
+                "mark": "bar",
                 "encoding": {
                     "x": {"field": "Q",
                           "type": "quantitative",

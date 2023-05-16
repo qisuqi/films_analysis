@@ -147,7 +147,7 @@ with col1:
     most_watched_genre_df = most_watched_genre_df.sort_values(by=['Mean'], ascending=False)
 
     with st.expander("See more info"):
-        st.markdown(f"Some of the top rated {most_watched_genre} films include: "F
+        st.markdown(f"Some of the top rated {most_watched_genre} films include: "
                     f"**{most_watched_genre_df.values.tolist()[0][0]}**,"
                     f"**{most_watched_genre_df.values.tolist()[1][0]}**,"
                     f"and **{most_watched_genre_df.values.tolist()[2][0]}**.")

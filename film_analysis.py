@@ -298,10 +298,12 @@ st.vega_lite_chart(file, {
                 "encoding": {
                     "x": {"field": "george_minus",
                           "type": "quantitative",
-                          "title": "Score"},
+                          "title": "Score",
+                          },
                     "y": {"field": "Name",
                           "sort": "-x",
-                          "title": None}
+                          "title": None},
+                    "color": "red"
                 }
             },
             {
@@ -312,7 +314,8 @@ st.vega_lite_chart(file, {
                           "title": "Score"},
                     "y": {"field": "Name",
                           "sort": "-x",
-                          "title": None}
+                          "title": None},
+                    "color": "blue"
                 }
             }
         ],

@@ -286,38 +286,23 @@ st.subheader("Rating Difference of G Minus Q")
 st.markdown('Films with red bars means Q liked more than G, and green means G liked more than Q.')
 
 st.vega_lite_chart(file, {
-        "width": "container",
-        "height": 500,
-        "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
-        "transform": [
-            {"calculate": "-datum.G", "as": "george_minus"}
-        ],
-        "layers": [
-            {
-                "mark": "bar",
-                "encoding": {
-                    "x": {"field": "george_minus",
-                          "type": "quantitative",
-                          "title": "Score",
-                          },
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None},
-                    "color": {"datum": "G", "legend": {"orient": "left"}}
-                }
-            },
-            {
-                "mark": "bar",
-                "encoding": {
-                    "x": {"field": "Q",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None},
-                    "color": {"datum": "Q", "legend": {"orient": "left"}}
-                }
-            }
-        ],
-        "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
+      "width": "container",
+      "height": 500,
+      "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
+      "transform": [
+          {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
+          {"filter": "datum.diff != 0"},
+          {"filter": "datum.Qiqi != 0"},
+          {"filter": "datum.George != 0"},
+          {"filter": "datum.Mean != 0"},
+      ],
+      "encoding": {
+          "x": {"field": "diff", "type": "quantitative", "title": "Score"},
+          "y": {"field": "Name", "sort": "-x", "title": "Film Names"},
+          "color": {
+              "condition": {"test": "datum.diff>0", "value": "green"},
+              "value": "red"
+          }
+      },
+      "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

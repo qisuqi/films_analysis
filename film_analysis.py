@@ -293,16 +293,16 @@ st.vega_lite_chart(file, {
             {"calculate": "-datum.G", "as": "george_minus"}
         ],
         "layers": [
-            {
-                "encoding": {
-                    "x": {"field": "george_minus",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None}
-                }
-            },
+            #{
+            #    "encoding": {
+            #        "x": {"field": "george_minus",
+            #              "type": "quantitative",
+            #              "title": "Score"},
+            #        "y": {"field": "Name",
+            #              "sort": "-x",
+            #              "title": None}
+            #    }
+            #},
             {
                 "encoding": {
                     "x": {"field": "Q",

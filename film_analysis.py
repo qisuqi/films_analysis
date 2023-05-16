@@ -292,7 +292,7 @@ st.vega_lite_chart(file, {
         "transform": [
             {"calculate": "-datum.G", "as": "george_minus"}
         ],
-        "layer": [
+        "layers": [
             {
                 "mark": "bar",
                 "encoding": {

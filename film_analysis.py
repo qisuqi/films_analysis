@@ -44,13 +44,13 @@ rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
 all_genre = list(sorted(set(filter(None, all_genre))))
 
-qiqi_average_score = np.average(file['Qiqi'])
-george_average_score = np.average(file['George'])
+q_average_score = np.average(file['Q'])
+g_average_score = np.average(file['G'])
 
-if george_average_score < qiqi_average_score:
-    mean_bastard = 'George'
-elif qiqi_average_score < george_average_score:
-    mean_bastard = 'Qiqi'
+if g_average_score < q_average_score:
+    mean_bastard = 'G'
+elif q_average_score < g_average_score:
+    mean_bastard = 'Q'
 
 else:
     mean_bastard = 'No one'
@@ -67,14 +67,14 @@ with st.form(key='Submit Films'):
         Director = st.sidebar.text_input('Director', key='Director')
         Genre = st.sidebar.selectbox('Genre', all_genre)
         Sub_Genre = st.sidebar.selectbox('Sub-Genre', all_genre)
-        George = st.sidebar.number_input("George's Score", key="George", min_value=0, max_value=10, step=1)
-        Qiqi = st.sidebar.number_input("Qiqi's Score", key="Qiqi", min_value=0, max_value=10, step=1)
+        G = st.sidebar.number_input("G's Score", key="G", min_value=0, max_value=10, step=1)
+        Q = st.sidebar.number_input("Q's Score", key="Q", min_value=0, max_value=10, step=1)
         BoB = st.sidebar.radio('Based on Books?', ('Y', 'N'))
         submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:
-    mean = (George + Qiqi)/2
-    info = [Name, Genre, '', Qiqi, George, mean, Director, BoB]
+    mean = (G + Q) / 2
+    info = [Name, Genre, '', Q, G, mean, Director, BoB]
     sheet.append_row(info)
     file = gsheet2df(sheet)
 
@@ -137,16 +137,16 @@ st.vega_lite_chart(file1, {
     }, use_container_width=True)
 
 st.subheader("Density Plot of Ratings")
-st.markdown(f"Qiqi's average score is {np.round(qiqi_average_score, 2)} and "
-            f"George's average score is {np.round(george_average_score, 2)}. "
+st.markdown(f"Q's average score is {np.round(q_average_score, 2)} and "
+            f"G's average score is {np.round(g_average_score, 2)}. "
             f"Therefore, {mean_bastard} is a mean Bastard.")
 
 st.vega_lite_chart(file, {
         "width": 400,
         "height": 300,
         "transform": [
-            {"filter": "datum.Qiqi != 0"},
-            {"filter": "datum.George != 0"},
+            {"filter": "datum.Q != 0"},
+            {"filter": "datum.G != 0"},
             {"filter": "datum.Mean != 0"},
         ],
         "layer": [
@@ -176,7 +176,7 @@ st.vega_lite_chart(file, {
             {
                 "transform": [
                     {
-                        "density": "George",
+                        "density": "G",
                         "bandwidth": 0.3
                     }
                 ],
@@ -192,13 +192,13 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "George", "legend": {"orient": "left"}}
+                    "color": {"datum": "G", "legend": {"orient": "left"}}
                 }
             },
             {
                 "transform": [
                     {
-                        "density": "Qiqi",
+                        "density": "Q",
                         "bandwidth": 0.3
                     }
                 ],
@@ -214,7 +214,7 @@ st.vega_lite_chart(file, {
                         "type": "quantitative",
                         "title": None
                     },
-                    "color": {"datum": "Qiqi", "legend": {"orient": "left"}}
+                    "color": {"datum": "Q", "legend": {"orient": "left"}}
                 }
             }
         ]
@@ -242,16 +242,15 @@ st.vega_lite_chart(file, {
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)
 
-st.subheader("Rating Difference of George Minus Qiqi")
-st.markdown('Films with red bars means Qiqi liked more than George, and green means George liked more than'
-            ' Qiqi.')
+st.subheader("Rating Difference of G Minus Q")
+st.markdown('Films with red bars means Q liked more than G, and green means G liked more than Q.')
 
 st.vega_lite_chart(file, {
         "width": "container",
         "height": 500,
         "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
         "transform": [
-            {"calculate": "-datum.George", "as": "george_minus"}
+            {"calculate": "-datum.G", "as": "george_minus"}
         ],
         "layers": [
             {
@@ -266,7 +265,7 @@ st.vega_lite_chart(file, {
             },
             {
                 "encoding": {
-                    "x": {"field": "Qiqi",
+                    "x": {"field": "Q",
                           "type": "quantitative",
                           "title": "Score"},
                     "y": {"field": "Name",

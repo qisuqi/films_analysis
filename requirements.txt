@@ -1,4 +1,7 @@
-streamlit
-pandas
-numpy
-gspread
+streamlit~=1.22.0
+pandas~=2.0.1
+numpy~=1.24.3
+gspread~=5.9.0
+
+scikit-learn~=1.2.2
+nltk~=3.8.1

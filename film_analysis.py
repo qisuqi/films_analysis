@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from google.oauth2 import service_account
 import gspread
+import pickle
 
 
 def getgsheet(spreadsheet_url, sheet_num):
@@ -87,6 +88,31 @@ if submit_button:
 st.title('Analysing Films Watched by Butler-Su')
 
 output_graphs = st.container()
+
+st.subheader('Recommend A Film')
+movies_dict = pickle.load(open('movies.pkl', 'rb'))
+movies = pd.DataFrame(movies_dict)
+selected_movie_name = st.selectbox("Type or select a movie from the dropdown", movies['title'].values)
+
+similarity = pickle.load(open('similarity.pkl', 'rb'))
+
+
+def recommend(movie):
+    movie_index = movies[movies['title'] == movie].index[0]
+    distances = similarity[movie_index]
+    movies_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
+
+    recommended_movies = []
+    for i in movies_list:
+             recommended_movies.append(movies.iloc[i[0]].title)
+    return recommended_movies
+
+
+if st.button('Show Recommendation'):
+    recommendations = recommend(selected_movie_name)
+
+    for i in recommendations:
+        st.write(i)
 
 st.subheader("Number of Films Watched per Genre")
 st.markdown(f"So far, the most watched genre is {most_watched_genre} with "

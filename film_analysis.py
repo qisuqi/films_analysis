@@ -143,7 +143,7 @@ st.vega_lite_chart(file1, {
     }, use_container_width=True)
 
 st.subheader("Average Score of Top Five Directors")
-st.markdown(f"The average score of the most watched genre, {most_watched_director}, is "
+st.markdown(f"The average score of the most watched director, {most_watched_director}, is "
             f"{round(rating_of_most_watched_director, 2)}.")
 
 top5_director = file['Director'].value_counts()[:5].index.tolist()
@@ -292,27 +292,27 @@ st.vega_lite_chart(file, {
         "transform": [
             {"calculate": "-datum.G", "as": "george_minus"}
         ],
-        "layers": [
-            {
-                "encoding": {
-                    "x": {"field": "george_minus",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None}
-                }
-            },
-            {
-                "encoding": {
-                    "x": {"field": "Q",
-                          "type": "quantitative",
-                          "title": "Score"},
-                    "y": {"field": "Name",
-                          "sort": "-x",
-                          "title": None}
-                }
-            }
-        ],
+        #"layers": [
+            #{
+        "encoding": {
+            "x": {"field": "george_minus",
+                  "type": "quantitative",
+                  "title": "Score"},
+            "y": {"field": "Name",
+                  "sort": "-x",
+                  "title": None}
+        },
+            #},
+            #{
+            #    "encoding": {
+            #        "x": {"field": "Q",
+            #              "type": "quantitative",
+            #              "title": "Score"},
+            #        "y": {"field": "Name",
+            #              "sort": "-x",
+            #              "title": None}
+            #    }
+            #}
+        #],
         "config": {"view": {"stroke": "transparent"}, "axis": {"domainWidth": 1}}
     }, use_container_width=True)

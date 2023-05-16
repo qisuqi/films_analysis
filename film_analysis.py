@@ -136,7 +136,7 @@ with col1:
                     }
                 },
                 "tooltip": [
-                    {"field": "value", "title": "Genre"},F
+                    {"field": "value", "title": "Genre"},
                     {"aggregate": "count", "title": "No.of Films", "field": "value"}
                 ],
             },

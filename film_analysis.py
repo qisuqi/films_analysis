@@ -41,6 +41,12 @@ no_most_watched_genre = file['Genre'].value_counts().values.tolist()[0]
 most_watched_genre_df = file[file['Genre'] == most_watched_genre]
 rating_of_most_watched_genre = np.average(most_watched_genre_df['Mean'])
 
+most_watched_director = file['Director'].value_counts().index.tolist()[0]
+no_most_watched_director = file['Director'].value_counts().values.tolist()[0]
+
+most_watched_director_df = file[file['Director'] == most_watched_director]
+rating_of_most_watched_director = np.average(most_watched_director_df['Mean'])
+
 all_genre = [x for x in file['Genre'].unique()] or [x for x in file['Sub-Genre'].unique()]
 all_genre = list(sorted(set(filter(None, all_genre))))
 
@@ -123,6 +129,40 @@ st.vega_lite_chart(file1, {
                   "type": "quantitative"},
             "color": {
                 "field": "Genre",
+                "type": "nominal",
+                "scale": {"scheme": "tableau20"},
+                "legend": {"orient": "left"}
+            },
+            "tooltip": [
+                {"aggregate": "mean", "title": "Average Score", "field": "Mean", "format": ".2f"},
+                {"aggregate": "count", "title": "No.of Films", "field": "Genre"}
+            ],
+        },
+
+        "view": {"stroke": None}
+    }, use_container_width=True)
+
+st.subheader("Average Score of Top Five Directors")
+st.markdown(f"The average score of the most watched genre, {most_watched_director}, is "
+            f"{round(rating_of_most_watched_director, 2)}.")
+
+top5_director = file['Director'].value_counts()[:5].index.tolist()
+file2 = file[file['Director'].isin(top5_director)]
+
+st.vega_lite_chart(file2, {
+        'width': 'container',
+        'height': 400,
+        "mark": {"type": "bar"},
+        "encoding": {
+            "y": {"field": "Director",
+                  "sort": "-x",
+                  "title": None},
+            "x": {"aggregate": "mean",
+                  "field": "Mean",
+                  "title": "Total Score",
+                  "type": "quantitative"},
+            "color": {
+                "field": "Director",
                 "type": "nominal",
                 "scale": {"scheme": "tableau20"},
                 "legend": {"orient": "left"}

@@ -303,7 +303,7 @@ st.vega_lite_chart(file, {
                     "y": {"field": "Name",
                           "sort": "-x",
                           "title": None},
-                    "color": "red"
+                    "color": {"datum": "G", "legend": {"orient": "left"}}
                 }
             },
             {
@@ -315,7 +315,7 @@ st.vega_lite_chart(file, {
                     "y": {"field": "Name",
                           "sort": "-x",
                           "title": None},
-                    "color": "blue"
+                    "color": {"datum": "Q", "legend": {"orient": "left"}}
                 }
             }
         ],

@@ -290,10 +290,10 @@ st.vega_lite_chart(file, {
       "height": 500,
       "mark": {"type": "bar", "cornerRadiusEnd": 4, "tooltip": {"content": "encoding"}},
       "transform": [
-          {"calculate": "datum.George-datum.Qiqi", "as": "diff"},
+          {"calculate": "datum.G-datum.Q", "as": "diff"},
           {"filter": "datum.diff != 0"},
-          {"filter": "datum.Qiqi != 0"},
-          {"filter": "datum.George != 0"},
+          {"filter": "datum.Q != 0"},
+          {"filter": "datum.G != 0"},
           {"filter": "datum.Mean != 0"},
       ],
       "encoding": {
